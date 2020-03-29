@@ -2,12 +2,14 @@
 """
 from os import listdir
 from os.path import abspath, dirname, join
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QPixmap
 import PyQt5.QtWidgets as qw
 
 
 class Multi(qw.QMainWindow):        # 多图片窗体类
+    signal = pyqtSignal()
+
     def __init__(self, imgdir):     # 初始化多图片窗体
         super().__init__()
         self.name = "多图片显示"
@@ -18,20 +20,28 @@ class Multi(qw.QMainWindow):        # 多图片窗体类
         self.showMaximized()
         self.createLayout()
 
-    def initAct(self):                  # 初始化动作功能
+    def switch(self):   # 切换窗体
+        self.signal.emit()
+
+    def initAct(self):  # 初始化动作功能
         self.openAct = qw.QAction("打开目录", self, shortcut="Ctrl+O")
         self.openAct.setToolTip("打开目录(Ctrl+O)")
         self.openAct.triggered.connect(self.openDir)
+        self.mainAct = qw.QAction("主窗体", self, shortcut="Ctrl+M")
+        self.mainAct.setToolTip("主窗体(Ctrl+M)")
+        self.mainAct.triggered.connect(self.switch)
         toolbar = self.addToolBar("主工具栏")
         toolbar.addAction(self.openAct)
+        toolbar.addAction(self.mainAct)
 
     def contextMenuEvent(self, event):  # 右键菜单事件处理
         menu = qw.QMenu(self)
         menu.addAction(self.openAct)
         menu.exec_(self.mapToGlobal(event.pos()))
 
-    def openDir(self):                  # 打开目录
-        imgdir = qw.QFileDialog.getExistingDirectory(self, "打开目录")
+    def openDir(self, imgdir=None):     # 打开目录
+        if not imgdir:
+            imgdir = qw.QFileDialog.getExistingDirectory(self, "打开目录")
         if imgdir:
             self.imgdir = abspath(imgdir)
             self.setWindowTitle(f"{self.imgdir} - {self.name}")
