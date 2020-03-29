@@ -64,9 +64,10 @@ class Main(QMainWindow):    # 主窗体类
         menu.addAction(self.asizeAct)
         menu.exec_(self.mapToGlobal(event.pos()))
 
-    def openImage(self):                # 打开图片文件
+    def openImage(self, fileName=None):                # 打开图片文件
         fil = "图片文件 (*.png *.gif *.jpg *.jpeg *.bmp *.svg);;所有文件 (*.*)"
-        fileName, _ = QFileDialog.getOpenFileName(self, "打开文件", "", fil)
+        if not fileName:
+            fileName, _ = QFileDialog.getOpenFileName(self, "打开文件", "", fil)
         if fileName:
             image = QImage(fileName)
             if image.isNull():

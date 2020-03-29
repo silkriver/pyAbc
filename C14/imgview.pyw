@@ -10,11 +10,13 @@ class Controller:           # 窗体切换控制器类
         self.main = Main()
         self.multi = None
 
-    def show_main(self):    # 显示主窗体
+    def show_main(self, imgfile=None):    # 显示主窗体
         self.main.signal.connect(self.show_multi)
         if self.multi:
             self.multi.hide()
         self.main.show()
+        if imgfile:
+            self.main.openImage(imgfile)
 
     def show_multi(self, imgdir):   # 显示多图片窗体
         if not self.multi:

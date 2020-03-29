@@ -7,8 +7,15 @@ from PyQt5.QtGui import QPixmap
 import PyQt5.QtWidgets as qw
 
 
+class XLabel(qw.QLabel):            # 可点击标签类
+    clicked = pyqtSignal(str)
+
+    def mousePressEvent(self, e):
+        self.clicked.emit(self.imgfile)
+
+
 class Multi(qw.QMainWindow):        # 多图片窗体类
-    signal = pyqtSignal()
+    signal = pyqtSignal(str)
 
     def __init__(self, imgdir):     # 初始化多图片窗体
         super().__init__()
@@ -20,8 +27,8 @@ class Multi(qw.QMainWindow):        # 多图片窗体类
         self.showMaximized()
         self.createLayout()
 
-    def switch(self):   # 切换窗体
-        self.signal.emit()
+    def switch(self, imgfile=None):   # 切换窗体
+        self.signal.emit(imgfile)
 
     def initAct(self):  # 初始化动作功能
         self.openAct = qw.QAction("打开目录", self, shortcut="Ctrl+O")
@@ -62,13 +69,16 @@ class Multi(qw.QMainWindow):        # 多图片窗体类
         self.setCentralWidget(self.scrollArea)
         cnt = self.width() // 200 - 1
         for (i, img_name) in enumerate(img_list):
-            img = qw.QLabel()
-            pixmap = QPixmap(join(self.imgdir, img_name))
+            img = XLabel()
+            imgfile = join(self.imgdir, img_name)
+            pixmap = QPixmap(imgfile)
             if pixmap.isNull():
                 continue
             img.resize(200, 200)
             img.setPixmap(pixmap.scaled(img.size(), Qt.KeepAspectRatio))
             img.setToolTip(img_name)
+            setattr(img, "imgfile", imgfile)
+            img.clicked.connect(self.switch)
             layout.addWidget(img, i // cnt, i % cnt)
 
 
