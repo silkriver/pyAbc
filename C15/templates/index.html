@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>在线文章聚合展示</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-dark bg-primary">
+    <a class="navbar-brand" href="#">在线文章聚合展示</a>
+  </nav>
+  <div class="container">
+    <table class="table">
+      <thead>
+        <td>主题</td>
+        <td>文章</td>
+        <td>日期</td>
+      </thead>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row["theme"] }}</td>
+        <td>
+          <a href="{{ row['url'] }}" target="_blank">
+            {{ row["title"] }}
+          </a>
+          <br />{{ row["desc"] }}
+        </td>
+        <td>{{ row["date"] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>
